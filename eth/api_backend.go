@@ -99,12 +99,12 @@ func (b *EthAPIBackend) StateAndHeaderByNumber(ctx context.Context, blockNr rpc.
 
 func (b *EthAPIBackend) StateAndHeaderByHash(ctx context.Context, blockHash common.Hash) (*state.StateDB, *types.Header, error) {
 	// Otherwise resolve the block number and return its state
-	header, err := b.HeaderByHash(ctx, blockHash)
-	if header == nil || err != nil {
+	block, err := b.GetBlock(ctx, blockHash)
+	if block == nil || err != nil {
 		return nil, nil, err
 	}
-	stateDb, err := b.eth.BlockChain().StateAt(header.Root)
-	return stateDb, header, err
+	stateDb, err := b.eth.BlockChain().StateAt(block.Root())
+	return stateDb, block.Header(), err
 }
 
 func (b *EthAPIBackend) GetBlock(ctx context.Context, hash common.Hash) (*types.Block, error) {

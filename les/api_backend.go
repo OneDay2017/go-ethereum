@@ -81,10 +81,11 @@ func (b *LesApiBackend) StateAndHeaderByNumber(ctx context.Context, blockNr rpc.
 }
 
 func (b *LesApiBackend) StateAndHeaderByHash(ctx context.Context, blockHash common.Hash) (*state.StateDB, *types.Header, error) {
-	header, err := b.HeaderByHash(ctx, blockHash)
-	if header == nil || err != nil {
+	block, err := b.GetBlock(ctx, blockHash)
+	if block == nil || err != nil {
 		return nil, nil, err
 	}
+	header := block.Header()
 	return light.NewState(ctx, header, b.eth.odr), header, nil
 }
 
